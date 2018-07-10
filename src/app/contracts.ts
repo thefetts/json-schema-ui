@@ -1,5 +1,6 @@
-const contracts = {
-    updateCartRequest: {
+export const contracts = [
+    {
+        name: 'update cart request',
         schema: {
             type: 'object',
             properties: {
@@ -30,7 +31,8 @@ const contracts = {
             }
         }
     },
-    updateCartResponse: {
+    {
+        name: 'update cart response',
         schema: {
             type: 'object',
             properties: {
@@ -61,4 +63,4 @@ const contracts = {
             ]
         }
     }
-};
+]

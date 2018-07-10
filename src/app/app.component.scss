@@ -1,0 +1,23 @@
+#container {
+  display: flex;
+  flex-grow: 1;
+
+  div {
+    margin: 0 5px 0 0;
+    flex: 1;
+
+    textarea {
+      margin-top: 5px;
+      width: 100%;
+    }
+  }
+}
+
+html {
+  font-family: Arial, sans-serif;
+}
+
+.louder {
+  color: red;
+  font-size: 18px;
+}
