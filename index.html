@@ -1,0 +1,137 @@
+<html>
+<head>
+    <!--
+    -styling
+    - show actual object that's wrong by parsing the json path?
+    -->
+    <link rel="stylesheet" href="styles.css" type="text/css"/>
+</head>
+<body>
+<div id="container">
+    <div>
+        <label for="schema">Schema</label>
+        <select onchange="updateTextAreas()" id="schemaSelector">
+            <option value="updateCartRequest">Update Cart Request</option>
+            <option value="updateCartResponse">Update Cart Response</option>
+        </select><br/>
+        <textarea rows="20" cols="50" id="schema"></textarea><br/>
+    </div>
+    <div>
+        <label for="data">Data</label><br/>
+        <textarea rows="20" cols="50" id="data"></textarea>
+    </div>
+</div>
+<button onclick="validate()">Validate!</button>
+<div id="output"></div>
+</body>
+
+<script src="tv4.js"></script>
+<script>
+    const map = {
+        updateCartRequest: {
+            schema: {
+                type: 'object',
+                properties: {
+                    item: {
+                        type: 'object',
+                        properties: {
+                            id: {
+                                type: 'number'
+                            },
+                            name: {
+                                type: 'string'
+                            },
+                            quantity: {
+                                type: 'number',
+                                minimum: 0
+                            }
+                        },
+                        additionalProperties: false,
+                        required: ['id', 'name']
+                    }
+                }
+            },
+            example: {
+                item: {
+                    id: 1234,
+                    name: '6 pack of beer',
+                    quantity: 56
+                }
+            }
+        },
+        updateCartResponse: {
+            schema: {
+                type: 'object',
+                properties: {
+                    cart: {
+                        type: 'array',
+                        items: {
+                            type: 'object',
+                            properties: {
+                                id: {
+                                    type: 'number'
+                                },
+                                name: {
+                                    type: 'string'
+                                },
+                                quantity: {
+                                    type: 'number'
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            example: {
+                cart: [
+                    {id: 5, name: 'Nuka-Cola', quantity: 5},
+                    {id: 37, name: 'Nuka-Cola Cherry', quantity: 2},
+                    {id: 284, name: 'Nuka-Cola Quantum', quantity: 1},
+                ]
+            }
+        }
+    };
+
+    function validate() {
+        try {
+            const schema = JSON.parse(document.querySelector('#schema').value.trim());
+            const data = JSON.parse(document.querySelector('#data').value.trim());
+            const validation = tv4.validateMultiple(data, schema);
+
+            const message = validation.errors.length ? makeMessage(validation, data) : 'No errors! Good job!';
+            document.querySelector('#output').innerHTML = message;
+        } catch (error) {
+            document.querySelector('#output').innerHTML = error;
+
+        }
+    }
+
+    function updateTextAreas() {
+        const key = document.querySelector('#schemaSelector').value;
+        document.querySelector('#schema').value = JSON.stringify(map[key].schema, null, 2);
+        document.querySelector('#data').value = JSON.stringify(map[key].example, null, 2);
+    }
+
+    function makeMessage(validation, data) {
+        return validation.errors
+            .map(error => {
+                const snippet = getSnippet(data, error.dataPath);
+                return `<strong>${error.dataPath}</strong>: ${error.message} at ${snippet}<br/>`
+            })
+            .join('')
+    }
+
+    function getSnippet(data, jsonPath) {
+        const paths = jsonPath.substring(1).split('/');
+        const key = paths.pop();
+
+        let snippet = data;
+        paths.forEach(path => snippet = snippet[path]);
+
+        let string = JSON.stringify(snippet);
+        return string.replace(`"${key}":`, `<strong>"${key}":</strong>`);
+    }
+
+    updateTextAreas()
+</script>
+</html>
