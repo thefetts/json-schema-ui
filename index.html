@@ -1,19 +1,12 @@
 <html>
 <head>
-    <!--
-    -styling
-    - show actual object that's wrong by parsing the json path?
-    -->
     <link rel="stylesheet" href="styles.css" type="text/css"/>
 </head>
 <body>
 <div id="container">
     <div>
         <label for="schema">Schema</label>
-        <select onchange="updateTextAreas()" id="schemaSelector">
-            <option value="updateCartRequest">Update Cart Request</option>
-            <option value="updateCartResponse">Update Cart Response</option>
-        </select><br/>
+        <select onchange="updateTextAreas()" id="schemaSelector"></select><br/>
         <textarea rows="20" cols="50" id="schema"></textarea><br/>
     </div>
     <div>
@@ -26,72 +19,8 @@
 </body>
 
 <script src="tv4.js"></script>
+<script src="contracts.js"></script>
 <script>
-    const map = {
-        updateCartRequest: {
-            schema: {
-                type: 'object',
-                properties: {
-                    item: {
-                        type: 'object',
-                        properties: {
-                            id: {
-                                type: 'number'
-                            },
-                            name: {
-                                type: 'string'
-                            },
-                            quantity: {
-                                type: 'number',
-                                minimum: 0
-                            }
-                        },
-                        additionalProperties: false,
-                        required: ['id', 'name']
-                    }
-                }
-            },
-            example: {
-                item: {
-                    id: 1234,
-                    name: '6 pack of beer',
-                    quantity: 56
-                }
-            }
-        },
-        updateCartResponse: {
-            schema: {
-                type: 'object',
-                properties: {
-                    cart: {
-                        type: 'array',
-                        items: {
-                            type: 'object',
-                            properties: {
-                                id: {
-                                    type: 'number'
-                                },
-                                name: {
-                                    type: 'string'
-                                },
-                                quantity: {
-                                    type: 'number'
-                                }
-                            }
-                        }
-                    }
-                }
-            },
-            example: {
-                cart: [
-                    {id: 5, name: 'Nuka-Cola', quantity: 5},
-                    {id: 37, name: 'Nuka-Cola Cherry', quantity: 2},
-                    {id: 284, name: 'Nuka-Cola Quantum', quantity: 1},
-                ]
-            }
-        }
-    };
-
     function validate() {
         try {
             const schema = JSON.parse(document.querySelector('#schema').value.trim());
@@ -99,24 +28,43 @@
             const validation = tv4.validateMultiple(data, schema);
 
             const message = validation.errors.length ? makeMessage(validation, data) : 'No errors! Good job!';
-            document.querySelector('#output').innerHTML = message;
+            showMessage(message);
         } catch (error) {
-            document.querySelector('#output').innerHTML = error;
-
+            showError(error);
         }
+    }
+
+    function showMessage(message, color) {
+        const output = document.querySelector('#output');
+        output.style.color = color || 'black';
+        output.innerHTML = message;
+    }
+
+    function showError(message) {
+        showMessage(message, 'red');
     }
 
     function updateTextAreas() {
         const key = document.querySelector('#schemaSelector').value;
-        document.querySelector('#schema').value = JSON.stringify(map[key].schema, null, 2);
-        document.querySelector('#data').value = JSON.stringify(map[key].example, null, 2);
+        document.querySelector('#schema').value = JSON.stringify(contracts[key].schema, null, 2);
+        document.querySelector('#data').value = JSON.stringify(contracts[key].example, null, 2);
+    }
+
+    function updateDropdown() {
+        const select = document.querySelector('#schemaSelector');
+        for (const key in contracts) {
+            const option = document.createElement('option');
+            option.value = key;
+            option.text = key;
+            select.append(option);
+        }
     }
 
     function makeMessage(validation, data) {
         return validation.errors
             .map(error => {
                 const snippet = getSnippet(data, error.dataPath);
-                return `<strong>${error.dataPath}</strong>: ${error.message} at ${snippet}<br/>`
+                return `<strong>${error.dataPath}</strong>: ${error.message}<br/>at <span class="snippet">${snippet}</span><br/><br/>`
             })
             .join('')
     }
@@ -128,10 +76,11 @@
         let snippet = data;
         paths.forEach(path => snippet = snippet[path]);
 
-        let string = JSON.stringify(snippet);
-        return string.replace(`"${key}":`, `<strong>"${key}":</strong>`);
+        const string = JSON.stringify(snippet, null, 2);
+        return string.replace(`"${key}":`, `<strong class="louder">"${key}":</strong>`);
     }
 
-    updateTextAreas()
+    updateDropdown();
+    updateTextAreas();
 </script>
 </html>
