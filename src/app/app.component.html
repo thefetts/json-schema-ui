@@ -1,13 +1,13 @@
 <div id="container">
     <div>
-        <label for="schema">Schema</label>
+        <label for="schema">Schema for </label>
         <select (change)="updateTextAreas()" id="schemaSelector" [(ngModel)]="selectedSchema">
             <option *ngFor="let schema of schemas" [ngValue]="schema">{{schema.name}}</option>
         </select><br/>
         <textarea rows="20" cols="50" id="schema" [(ngModel)]="schema"></textarea><br/>
     </div>
     <div>
-        <label for="data">Data</label><br/>
+        <label for="data">Data to validate</label><br/>
         <textarea rows="20" cols="50" id="data" [(ngModel)]="data"></textarea>
     </div>
 </div>

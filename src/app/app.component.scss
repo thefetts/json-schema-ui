@@ -1,10 +1,11 @@
 #container {
   display: flex;
   flex-grow: 1;
+  justify-content: space-between;
 
   div {
     margin: 0 5px 0 0;
-    flex: 1;
+    width: 49%;
 
     textarea {
       margin-top: 5px;
@@ -20,4 +21,8 @@ html {
 .louder {
   color: red;
   font-size: 18px;
+}
+
+#message {
+  color: green;
 }
