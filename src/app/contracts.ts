@@ -12,10 +12,6 @@ export const contracts = [
                         },
                         name: {
                             type: 'string'
-                        },
-                        quantity: {
-                            type: 'number',
-                            minimum: 0
                         }
                     },
                     additionalProperties: false,
@@ -26,8 +22,7 @@ export const contracts = [
         example: {
             item: {
                 id: 1234,
-                name: '6 pack of beer',
-                quantity: 56
+                name: '6 pack of beer'
             }
         }
     },
@@ -46,9 +41,6 @@ export const contracts = [
                             },
                             name: {
                                 type: 'string'
-                            },
-                            quantity: {
-                                type: 'number'
                             }
                         }
                     }
@@ -57,9 +49,9 @@ export const contracts = [
         },
         example: {
             cart: [
-                {id: 5, name: 'Nuka-Cola', quantity: 5},
-                {id: 37, name: 'Nuka-Cola Cherry', quantity: 2},
-                {id: 284, name: 'Nuka-Cola Quantum', quantity: 1},
+                {id: 5, name: 'Nuka-Cola'},
+                {id: 37, name: 'Nuka-Cola Cherry'},
+                {id: 284, name: 'Nuka-Cola Quantum'},
             ]
         }
     }

@@ -44,15 +44,4 @@ export class AppComponent implements OnInit {
 
         }
     }
-
-    //function getSnippet(data, jsonPath) {
-    //         const paths = jsonPath.substring(1).split('/');
-    //         const key = paths.pop();
-    //
-    //         let snippet = data;
-    //         paths.forEach(path => snippet = snippet[path]);
-    //
-    //         const string = JSON.stringify(snippet, null, 2);
-    //         return string.replace(`"${key}":`, `<strong class="louder">"${key}":</strong>`);
-    //     }
 }
