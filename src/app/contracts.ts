@@ -42,7 +42,8 @@ export const contracts = [
                             name: {
                                 type: 'string'
                             }
-                        }
+                        },
+                        additionalProperties: false
                     }
                 }
             }
